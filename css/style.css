@@ -503,7 +503,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @keyframes title-in { from { opacity: 0; } }
 .screen[data-pos="active"] .pane[data-pos="active"] .side__title.a,
 .screen[data-pos="active"] .pane[data-pos="active"] .group-head.a {
-  transition: opacity var(--t-hover-out) var(--ease-in-out);
+  transition: opacity var(--t-hover-out) var(--ease-out);
   animation: title-in var(--t-enter) var(--ease-out) var(--t-title-in-delay) backwards;
 }
 /* while the list is hovered, titles brighten on the same curve as the row that lights up */
@@ -520,16 +520,17 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   transition: transform var(--t-enter-move) var(--ease-out) var(--t-title-in-delay);
 }
 
-/* Hover highlight: the hovered target stays, its siblings dim.
+/* Hover highlight: the hovered target stays, its siblings dim. Dimming and
+   recovering both start at once (ease-out), so leaving a row answers immediately.
    Header rows and small titles dim with the rest. */
-.hl { transition: opacity var(--t-hover-out) var(--ease-in-out); outline-offset: 6px; }
+.hl { transition: opacity var(--t-hover-out) var(--ease-out); outline-offset: 6px; }
 .hl-scope.is-hovering .hl { transition: opacity var(--t-hover-in) var(--ease-out); }
 .hl-scope.is-hovering .hl:not(.is-active) { opacity: .3; }
 .hl-scope.is-hovering .hl--anchor:not(.is-active) { opacity: 1; }
 /* Hovering a row dims everything else in the section body, including the
    header list above it and the small title on the left (역량 Competency,
    Fundamental, 수료 & 졸업 …). */
-.side__title, .period__head { transition: opacity var(--t-hover-out) var(--ease-in-out); }
+.side__title, .period__head { transition: opacity var(--t-hover-out) var(--ease-out); }
 .hl-scope.is-hovering .group-head.hl--anchor:not(.is-active),
 .hl-scope.is-hovering .term__head.hl--anchor:not(.is-active),
 /* …except the row right beside the small title, which keeps the title lit. */

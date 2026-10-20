@@ -441,6 +441,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   transition: opacity var(--t-exit) var(--ease-in), scale 0s linear var(--t-exit);
 }
 .hero__intro.a, .hero__facts .a { --dy-a: 36px; }
+.hero__defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.hero__headline.is-pix, .hero__topics.is-pix { filter: url(#hero-pix); }
 
 /* ── Section screens ─────────────────────────────────── */
 .stage { position: relative; height: 100%; display: flex; flex-direction: column; overflow: clip; }

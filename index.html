@@ -7,9 +7,9 @@
 <meta name="description" content="BI(Beautiful Interface) 수업 과제로 만든 phi.design/programs 비공식 리디자인 시안 · 박세희">
 <meta name="robots" content="noindex, nofollow">
 <link rel="preload" href="assets/fonts/PretendardVariable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/style.css?v=76089775">
+<link rel="stylesheet" href="css/style.css?v=98f06052">
 <script>document.documentElement.classList.add('js', 'is-booting');</script>
-<script src="js/main.js?v=ee3f0d0e" defer></script>
+<script src="js/main.js?v=26a42ca4" defer></script>
 </head>
 <body>
 
@@ -56,18 +56,6 @@
       <i class="cross-h"></i>
       <span class="cross-label">(0, 0)</span>
     </div>
-
-    <!-- Pixel filter for the headline and course names: sample the text at the
-         centre of every cell, then grow each sample into a square dot (JS sets the cell) -->
-    <svg class="hero__defs" width="0" height="0" aria-hidden="true" focusable="false">
-      <filter id="hero-pix" x="-5%" y="-10%" width="110%" height="120%" color-interpolation-filters="sRGB">
-        <feFlood x="1" y="1" width="1" height="1" flood-color="#fff" result="dot"/>
-        <feComposite class="pix-cell" in="dot" in2="dot" operator="over" x="0" y="0" width="3" height="3"/>
-        <feTile result="grid"/>
-        <feComposite in="SourceGraphic" in2="grid" operator="in"/>
-        <feMorphology operator="dilate" radius="1"/>
-      </filter>
-    </svg>
 
     <div class="hero__frame">
       <ol class="hero__topics" aria-label="12개 수업">

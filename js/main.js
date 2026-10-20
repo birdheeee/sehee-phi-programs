@@ -405,46 +405,6 @@
       numIdx = i;
     }
 
-    /* Headline + course names breathe between vector and the logo's dot grid:
-       hold as vector → gradually pixelate → hold → gradually back, one loop about
-       as long as the logo's turn. Each step only changes the SVG filter's cell. */
-    const pixEls = [hero.querySelector('.hero__headline'), hero.querySelector('.hero__topics')];
-    const pixFilter = hero.querySelector('#hero-pix');
-    const pixDot = pixFilter.querySelector('feFlood');
-    const pixCell = pixFilter.querySelector('.pix-cell');
-    const pixGrow = pixFilter.querySelector('feMorphology');
-    // [cell pitch, dot radius]: dot side = 2r+1; the last steps open gaps like the logo's dots
-    const PIX_STEPS = [[1, 0], [3, 1], [4, 1], [5, 2], [6, 2], [7, 2]];
-    const PIX_LEAD = 2200;  // let the entrance finish first
-    const PIX_VECTOR = 1400;
-    const PIX_RAMP = 1300;
-    const PIX_PEAK = 1200;
-    const PIX_CYCLE = PIX_VECTOR + PIX_RAMP * 2 + PIX_PEAK;
-    let pixT = -PIX_LEAD;
-    let pixStep = 0;
-    function setPix(k) {
-      if (k === pixStep) return;
-      pixStep = k;
-      if (k === 0) { pixEls.forEach((e) => e.classList.remove('is-pix')); return; }
-      const [cell, r] = PIX_STEPS[k];
-      const c = Math.floor(cell / 2);
-      pixDot.setAttribute('x', c); pixDot.setAttribute('y', c);
-      pixCell.setAttribute('width', cell); pixCell.setAttribute('height', cell);
-      pixGrow.setAttribute('radius', r);
-      pixEls.forEach((e) => e.classList.add('is-pix'));
-    }
-    function pixAt(t) {
-      const top = PIX_STEPS.length - 1;
-      const ease = (p) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
-      if (t < PIX_VECTOR) return 0;
-      t -= PIX_VECTOR;
-      if (t < PIX_RAMP) return Math.round(ease(t / PIX_RAMP) * top);
-      t -= PIX_RAMP;
-      if (t < PIX_PEAK) return top;
-      t -= PIX_PEAK;
-      return Math.round((1 - ease(t / PIX_RAMP)) * top);
-    }
-
     /* Rotating pixel logos: 155 frames @ 30 fps drawn to canvas */
     const LOGO_FPS = 30;
     let frames = null;
@@ -588,9 +548,6 @@
           }
           busy = true;
         }
-        pixT += dt;
-        if (pixT >= 0) { pixT %= PIX_CYCLE; setPix(pixAt(pixT)); }
-        busy = true;
         if (frames) {
           logoT += dt;
           const f = Math.floor(logoT / (1000 / LOGO_FPS)) % frames.length;
@@ -639,8 +596,6 @@
           cross.classList.remove('is-on');
           showNum(0);           // restart the count from 1 every time the hero appears
           numT = -NUM_LEAD;
-          setPix(0);            // text starts as vector and waits for the entrance
-          pixT = -PIX_LEAD;
           kick();
         } else {
           sp.on = false;

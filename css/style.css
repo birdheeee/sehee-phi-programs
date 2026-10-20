@@ -45,6 +45,7 @@
   --gnb-h: 64px;
   --container: 1440px;
   --pad: 40px;
+  --hero-col: 376px;   /* hero intro + course facts column (Figma 360, widened so the intro ends on 4 lines) */
   --col-l: 427px;
   --gap: 40px;
   --col-name: 310px;
@@ -355,7 +356,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   z-index: 3;
   right: var(--pad);
   top: calc(100 * var(--u));
-  width: 360px;
+  width: var(--hero-col);
   font-size: 14px;
   line-height: 1.55;
   color: var(--ink-300);
@@ -365,7 +366,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   z-index: 3;
   right: var(--pad);
   bottom: calc(96 * var(--u));
-  width: 360px;
+  width: var(--hero-col);
   --ln: var(--night-label);
 }
 .hero__facts > div {

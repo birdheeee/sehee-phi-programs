@@ -95,6 +95,8 @@ body {
   font-family: var(--f-sans);
   font-weight: 500;
   letter-spacing: -0.01em;
+  word-break: keep-all;      /* Korean wraps between words, not between syllables */
+  overflow-wrap: break-word; /* a single over-long word may still break */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;

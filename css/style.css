@@ -273,7 +273,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* Pointer crosshair on top of the fixed φ grid */
 .hero__cross { opacity: 0; transition: opacity var(--t-hover-out) var(--ease-in); }
 .hero__cross.is-on { opacity: 1; transition: opacity var(--t-hover-in) var(--ease-out); }
-.cross-v, .cross-h { position: absolute; display: block; background: var(--ink-500); will-change: transform; }
+.cross-v, .cross-h { position: absolute; display: block; background: var(--night-line); transition: background-color 240ms var(--ease-out); will-change: transform; }
+.cross-v.is-hit, .cross-h.is-hit { background: var(--ink-500); transition-duration: 120ms; } /* lit while it lies on a φ line */
 .cross-v { top: 0; bottom: 0; left: 0; width: 1px; }
 .cross-h { left: 0; right: 0; top: 0; height: 1px; }
 .cross-label {

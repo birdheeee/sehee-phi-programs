@@ -499,9 +499,27 @@
       sp.armed = false;
       cross.classList.remove('is-on');
     });
+    /* The crosshair wears the φ grid's own colour and lights up only while it
+       sits exactly on one of the grid lines (per axis). */
+    const HIT_PX = 1;
+    let gridX = [];
+    let gridY = [];
+    let gridFor = '';
+    function measureGrid() {
+      const key = `${heroW}x${heroH}`;
+      if (key === gridFor) return;
+      const r = hero.getBoundingClientRect();
+      // exact sub-pixel positions (the entrance scale only stretches lines along their own length)
+      gridX = [...hero.querySelectorAll('.gl--v')].map((g) => g.getBoundingClientRect().left - r.left);
+      gridY = [...hero.querySelectorAll('.gl--h')].map((g) => g.getBoundingClientRect().top - r.top);
+      gridFor = key;
+    }
     function renderCross() {
       crossV.style.transform = `translate3d(${sp.x.toFixed(1)}px, 0, 0)`;
       crossH.style.transform = `translate3d(0, ${sp.y.toFixed(1)}px, 0)`;
+      measureGrid();
+      crossV.classList.toggle('is-hit', gridX.some((gx) => Math.abs(sp.x - gx) < HIT_PX));
+      crossH.classList.toggle('is-hit', gridY.some((gy) => Math.abs(sp.y - gy) < HIT_PX));
       const bw = Math.min(heroW, 1920);
       const bl = (heroW - bw) / 2;
       const fx = Math.round(((sp.x - bl) / bw) * 1920);

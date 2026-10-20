@@ -32,7 +32,7 @@
   const CAROUSEL_SETTLE_MAX = 1600; // …extended while a fling's momentum keeps coming, up to this
   const YEAR_COLLAPSE = 620;// ms to fold a period back into the overview
   const YEAR_EXPAND = 760;  // ms for a period to open
-  const TALENT_ENTER = 1370;// ms the 인재상 diagram takes to pop in
+  const TALENT_ENTER = 1440;// ms the 인재상 diagram takes to pop in
   const TALENT_HOLD = 2500; // ms it then rests before moving on by itself
   const TALENT_SHRINK = 1170;// ms of the reversed entrance before the next step
 

@@ -251,11 +251,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .gl-h1 { top: 23.6068%; left: 0; width: calc(var(--bl) + 0.618034 * var(--bw)); }
 .gl-h2 { top: 38.1966%; left: 0; right: 0; }
-.gl-h3 { top: 52.7864%; left: 0; width: calc(var(--bl) + 0.763932 * var(--bw)); }
+.gl-h3 { top: 52.7864%; left: 0; width: calc(var(--bl) + 0.853646 * var(--bw)); } /* to x 1639 */
 .gl-h4 { top: 61.8034%; left: calc(var(--bl) + 0.381966 * var(--bw)); right: 0; }
 .gl-v1 { left: calc(var(--bl) + 0.381966 * var(--bw)); top: 0; bottom: 0; }
 .gl-v2 { left: calc(var(--bl) + 0.618034 * var(--bw)); top: 0; height: 38.1966%; }
-.gl-v3 { left: calc(var(--bl) + 0.763932 * var(--bw)); top: 38.1966%; height: 23.6068%; }
+.gl-v3 { left: calc(var(--bl) + 0.853646 * var(--bw)); top: 38.1966%; height: 23.6068%; } /* x 1639, y 413–667 */
 .gl-label {
   position: absolute;
   font-size: 12px;
@@ -269,6 +269,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .gl-label--d { left: 8px; top: calc(23.6068% + 9px); }
 .gl-label--e { left: 8px; top: calc(38.1966% + 9px); }
 .gl-label--f { left: 8px; top: calc(52.7864% + 9px); }
+.gl-label--g { left: calc(var(--bl) + 0.381966 * var(--bw) + 5.5px); top: calc(23.6068% + 4px); }
 
 /* Pointer crosshair on top of the fixed φ grid */
 .hero__cross { opacity: 0; transition: opacity var(--t-hover-out) var(--ease-in); }

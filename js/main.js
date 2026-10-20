@@ -758,17 +758,14 @@
     });
   }
 
-  function scrollToStep(si, step) {
-    const g = segs.find((x) => x.si === si && x.step === step);
-    if (g) smoothScrollTo(deckTop() + g.start + Math.min(g.len * 0.35, stepPx * 0.35));
-  }
-
-  // Clickable shortcuts: diagram circles, period cards
+  // Clickable shortcuts: diagram circles, period cards. They jump straight to
+  // the target step: a smooth scroll would pass through the steps in between
+  // (e.g. open 1학기 and fold it again on the way to 방학 & 캠프).
   deck.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-goto]');
     if (!btn) return;
     const si = screens.findIndex((s) => s.el.contains(btn));
-    if (si >= 0) scrollToStep(si, Number(btn.dataset.goto));
+    if (si >= 0) jumpToStep(si, Number(btn.dataset.goto));
   });
 
   // "+" buttons point to detail pages that do not exist yet

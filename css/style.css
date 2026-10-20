@@ -506,6 +506,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   transition: opacity var(--t-hover-out) var(--ease-in-out);
   animation: title-in var(--t-enter) var(--ease-out) var(--t-title-in-delay) backwards;
 }
+/* while the list is hovered, titles brighten on the same curve as the row that lights up */
+.screen[data-pos="active"] .pane[data-pos="active"] .split:has(> .hl-scope.is-hovering) .side__title.a,
+.screen[data-pos="active"] .pane[data-pos="active"].hl-scope.is-hovering .group-head.a {
+  transition: opacity var(--t-hover-in) var(--ease-out);
+}
 /* …but the group's meta and description beside the title rise and leave like the list rows */
 .group-info { transform: translate3d(0, 28px, 0); transition: transform var(--t-exit) var(--ease-in); }
 .screen[data-pos="before"] .group-info,

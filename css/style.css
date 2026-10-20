@@ -1,0 +1,845 @@
+/* Phi Programs · To Be
+   Source: Figma VFE5YxWR6pzNONZAT7sur8 (To Be 4:4113) + Domain 7498:8469
+   Layout: 1440 container, 427 | 40 | 893 columns.
+   Every section is a full-screen "screen" stacked in one sticky viewport;
+   scrolling switches screens and steps instead of moving them. */
+
+@font-face {
+  font-family: "Pretendard Variable";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url("../assets/fonts/PretendardVariable.woff2") format("woff2-variations"),
+       url("../assets/fonts/PretendardVariable.woff2") format("woff2");
+}
+
+:root {
+  color-scheme: light;
+  --spring: linear(0.0, 0.0286, 0.1022, 0.2048, 0.323, 0.4462, 0.5665, 0.6779, 0.777, 0.8615, 0.9309, 0.9854, 1.0261, 1.0544, 1.0722, 1.0813, 1.0835, 1.0806, 1.0741, 1.0653, 1.0554, 1.0451, 1.0351, 1.0259, 1.0177, 1.0108, 1.0052, 1.0008, 0.9975, 0.9952, 0.9938, 0.9932, 0.993, 0.9933, 0.9939, 0.9946, 0.9955, 0.9963, 0.9972, 0.9979, 0.9986, 0.9992, 0.9996, 1.0, 1.0002, 1.0004, 1.0005, 1.0006, 1);
+
+  /* Color: Figma values, named by role */
+  --ink-900: #161617;   /* titles */
+  --ink-800: #272729;   /* item names */
+  --ink-700: #333336;   /* button hover */
+  --ink-600: #424245;   /* section intro, title rule, nav text */
+  --ink-500: #6E6E73;
+  --ink-400: #86868B;   /* descriptions, captions */
+  --ink-300: #A0A0A5;
+  --ink-200: #CDCDD2;   /* timetable hours */
+  --line: #D2D2D7;
+  --fill: #F5F5F7;      /* image placeholder */
+  --paper: #FFFFFF;
+  --night: #121212;     /* hero, footer */
+  --night-ink: #FAFAFC;
+  --night-ink-2: #F5F5F7;
+  --night-line: #333336;
+  --night-label: #424245;
+  --night-strong: #E8E8ED;
+  --night-sep: #272729;
+
+  /* Type */
+  --f-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --f-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Fixed areas (px) */
+  --gnb-h: 64px;
+  --container: 1440px;
+  --pad: 40px;
+  --col-l: 427px;
+  --gap: 40px;
+  --col-name: 310px;
+  --desc-pr: 117px;
+
+  /* Height-dependent spacing (regular tier, viewport >= 860px) */
+  --list-gap: 40px;
+  --side-gap: 76px;
+  --group-gap: 40px;
+  --rail-gap: 48px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);       /* arriving: fast start, long settle */
+  --ease-in: cubic-bezier(.55, 0, 1, .45);       /* leaving: slow start, accelerates away */
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);   /* moving between two resting points */
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);/* small overshoot, settles back */
+  --t-exit: 320ms;
+  --t-enter: 640ms;
+  --t-enter-move: 820ms;
+  --t-line: 700ms;
+  --t-line-lag: 150ms;  /* right-hand line of a row follows the left one */
+  --t-delay: 120ms;
+  --t-stagger: 55ms;
+  --t-title-out: 200ms;
+  --t-title-in-delay: 220ms;
+  --t-hover-in: 320ms;
+  --t-hover-out: 480ms;
+  --t-expand: 720ms;
+}
+
+/* Compact tier: 1536×864 / 1440×900 screens give a ~730–790px viewport. */
+@media (max-height: 859px) {
+  :root {
+    --list-gap: 24px;
+    --side-gap: 40px;
+    --group-gap: 24px;
+    --rail-gap: 24px;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-width: 1280px;
+  background: var(--paper);
+  color: var(--ink-900);
+  font-family: var(--f-sans);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+h1, h2, h3, p, ol, ul, dl, dd, figure { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+a { color: inherit; text-decoration: none; }
+img, canvas { display: block; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; text-align: inherit; }
+:focus-visible { outline: 2px solid var(--ink-900); outline-offset: 4px; }
+
+.wrap {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* ── GNB: hides on scroll down, returns on scroll up ─── */
+.gnb {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: var(--gnb-h);
+  background: rgba(255, 255, 255, .85);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  transition: transform 520ms var(--ease-out);
+}
+.gnb.is-hidden { transform: translate3d(0, -100%, 0); transition: transform 380ms var(--ease-in); }
+.gnb__in { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+.gnb__logo img { width: 80px; height: 44px; }
+.gnb__nav { display: flex; align-items: center; gap: 36px; }
+.gnb__link {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-600);
+  transition: color var(--t-hover-out) var(--ease-in-out);
+}
+.gnb__link:hover { color: var(--ink-900); transition: color var(--t-hover-in) var(--ease-out); }
+.gnb__cta {
+  width: 132px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: var(--ink-900);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  transition: background-color var(--t-hover-out) var(--ease-in-out), transform 520ms var(--ease-spring);
+}
+.gnb__cta:hover { background: var(--ink-700); transition: background-color var(--t-hover-in) var(--ease-out), transform 520ms var(--ease-spring); }
+.gnb__cta:active { transform: scale(.96); transition-duration: 140ms; }
+
+/* ── Deck: one sticky viewport, screens stacked inside ─ */
+.deck { position: relative; }
+.deck__view { position: sticky; top: 0; height: 100vh; overflow: clip; background: var(--paper); }
+.screen {
+  position: absolute;
+  inset: 0;
+  padding-top: var(--gnb-h);
+  visibility: hidden;
+  transition: visibility 0s linear 480ms;
+}
+.screen[data-pos="active"] { visibility: visible; z-index: 1; transition: none; }
+/* Section screens: the GNB hides while scrolling down, so they reserve 40px less than its height. */
+.screen:not(.screen--hero) { --top-reserve: calc(var(--gnb-h) - 40px); padding-top: var(--top-reserve); }
+
+/* Entering / leaving content (.a). The hidden state sits below the resting
+   position for what comes next, above it for what has passed. */
+.a {
+  --a-delay: calc(var(--t-delay) + var(--i, 0) * var(--t-stagger));
+  opacity: 0;
+  transform: translate3d(0, var(--dy-a, 28px), 0);
+  transition: opacity var(--t-exit) var(--ease-in), transform var(--t-exit) var(--ease-in);
+}
+.pane .a { --a-delay: calc(var(--t-delay) + (var(--i, 0) + 1) * var(--t-stagger)); }
+.screen[data-pos="before"] .a,
+.pane[data-pos="before"] .a { transform: translate3d(0, var(--dy-b, -18px), 0); }
+.a--fade { --dy-a: 0px; --dy-b: 0px; }
+.screen--hero[data-pos="active"] .a,
+.screen[data-pos="active"] .sec-head .a,
+.screen[data-pos="active"] .pane[data-pos="active"] .a {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--t-enter) var(--ease-out) var(--a-delay),
+    transform var(--t-enter-move) var(--ease-out) var(--a-delay);
+}
+
+/* Lines that go with text draw from left to right */
+.ln { position: relative; }
+.ln::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: var(--ln, var(--line));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0s linear var(--t-exit);
+}
+.screen--hero[data-pos="active"] .ln::before,
+.screen[data-pos="active"] .sec-head .ln::before,
+.screen[data-pos="active"] .pane[data-pos="active"] .ln::before {
+  transform: none;
+  transition: transform var(--t-line) var(--ease-out) calc(var(--a-delay, var(--t-delay)) + 60ms + var(--ln-lag, 0ms));
+}
+.row__desc.ln { --ln-lag: var(--t-line-lag); }
+
+/* ── Hero ────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 100%;
+  background: var(--night);
+  color: var(--night-ink);
+  overflow: hidden;
+  isolation: isolate;
+  opacity: 0;
+  transition: opacity 420ms var(--ease-in);
+}
+.screen--hero[data-pos="active"] .hero { opacity: 1; transition: opacity 480ms var(--ease-out); }
+
+/* φ grid: fractions of a 1920-wide box (W/φ², H/φ …). Lines touching the
+   box edge continue to the screen edge. */
+.hero__grid, .hero__cross {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --bw: min(100%, 1920px);
+  --bl: calc((100% - var(--bw)) / 2);
+}
+.gl {
+  position: absolute;
+  display: block;
+  background: var(--night-line);
+  transition: transform 0s linear var(--t-exit);
+}
+.gl--h { height: 1px; transform: scaleX(0); transform-origin: 100% 50%; }
+.gl--v { width: 1px; transform: scaleY(0); transform-origin: 50% 0; }
+.screen--hero[data-pos="active"] .gl {
+  transform: none;
+  transition: transform 1000ms var(--ease-out) calc(var(--t-delay) + var(--i, 0) * var(--t-stagger));
+}
+.gl-h1 { top: 23.6068%; left: 0; width: calc(var(--bl) + 0.618034 * var(--bw)); }
+.gl-h2 { top: 38.1966%; left: 0; right: 0; }
+.gl-h3 { top: 52.7864%; left: 0; width: calc(var(--bl) + 0.763932 * var(--bw)); }
+.gl-h4 { top: 61.8034%; left: calc(var(--bl) + 0.381966 * var(--bw)); right: 0; }
+.gl-v1 { left: calc(var(--bl) + 0.381966 * var(--bw)); top: 0; bottom: 0; }
+.gl-v2 { left: calc(var(--bl) + 0.618034 * var(--bw)); top: 0; height: 38.1966%; }
+.gl-v3 { left: calc(var(--bl) + 0.763932 * var(--bw)); top: 38.1966%; height: 23.6068%; }
+.gl-label {
+  position: absolute;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--night-label);
+}
+.gl-label--a { left: 8px; top: 8px; }
+.gl-label--b { left: calc(var(--bl) + 0.381966 * var(--bw) + 9px); top: 8px; }
+.gl-label--c { left: calc(var(--bl) + 0.618034 * var(--bw) + 9px); top: 8px; }
+.gl-label--d { left: 8px; top: calc(23.6068% + 9px); }
+.gl-label--e { left: 8px; top: calc(38.1966% + 9px); }
+.gl-label--f { left: 8px; top: calc(52.7864% + 9px); }
+
+/* Pointer crosshair on top of the fixed φ grid */
+.hero__cross { opacity: 0; transition: opacity var(--t-hover-out) var(--ease-in); }
+.hero__cross.is-on { opacity: 1; transition: opacity var(--t-hover-in) var(--ease-out); }
+.cross-v, .cross-h { position: absolute; display: block; background: var(--ink-500); will-change: transform; }
+.cross-v { top: 0; bottom: 0; left: 0; width: 1px; }
+.cross-h { left: 0; right: 0; top: 0; height: 1px; }
+.cross-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 12px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-400);
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* Hero composition. --u = one Figma pixel of the 1080-high frame.
+   Stacking, back to front: φ lines → logos → headline / info → course names → 1–12 */
+.hero__frame {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  container-type: size;
+}
+.hero__frame > * { --u: min(calc(100cqh / 1080), 1.2px); }
+
+.hero__topics {
+  position: absolute;
+  z-index: 4;
+  left: calc(var(--pad) + 2 * var(--u));
+  top: calc(437 * var(--u));
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: calc(42 * var(--u));
+  line-height: 1.1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--night-ink);
+}
+.hero__topics li { --dy-a: 14px; }
+.hero__headline {
+  position: absolute;
+  z-index: 3;
+  left: var(--pad);
+  top: calc(88 * var(--u));
+  display: flex;
+  gap: calc(112 * var(--u));
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: calc(60 * var(--u));
+  line-height: .9;
+  letter-spacing: -0.015em;
+  word-spacing: -0.08em;
+  color: var(--night-ink);
+  white-space: nowrap;
+}
+.hero__headline-col { display: flex; flex-direction: column; width: calc(286 * var(--u)); }
+.hero__headline-col--b { width: calc(310 * var(--u)); }
+.hero__headline .indent { padding-left: calc(6 * var(--u)); }
+
+.hero__num {
+  position: absolute;
+  z-index: 5;
+  left: calc(var(--pad) + 20 * var(--u));
+  top: calc(324 * var(--u));
+  width: calc(756 * var(--u));
+  height: calc(756 * var(--u));
+}
+.hero__num img { position: absolute; inset: 0; width: 100%; height: 100%; visibility: hidden; }
+.hero__num img.is-on { visibility: visible; }
+
+.hero__intro {
+  position: absolute;
+  z-index: 3;
+  right: var(--pad);
+  top: calc(100 * var(--u));
+  width: 360px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-300);
+}
+.hero__facts {
+  position: absolute;
+  z-index: 3;
+  right: var(--pad);
+  bottom: calc(96 * var(--u));
+  width: 360px;
+  --ln: var(--night-label);
+}
+.hero__facts > div {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  column-gap: 12px;
+  padding-block: 11px 10px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.hero__facts > div:last-child::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--night-label);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0s linear var(--t-exit);
+}
+/* the closing line follows the last row's top line */
+.screen--hero[data-pos="active"] .hero__facts > div:last-child::after {
+  transform: none;
+  transition: transform var(--t-line) var(--ease-out) calc(var(--a-delay) + 60ms + var(--t-stagger) * 4);
+}
+.hero__facts dt { font-weight: 700; color: var(--night-ink-2); white-space: nowrap; }
+.hero__facts dd { color: var(--ink-300); }
+
+.hero__logo {
+  position: absolute;
+  left: calc(var(--pad) + 82 * var(--u));
+  width: calc(640 * var(--u));
+  height: calc(640 * var(--u));
+}
+.hero__logo--top { z-index: 2; top: calc(-90 * var(--u)); }
+.hero__logo--low { z-index: 1; top: calc(376 * var(--u)); }
+.hero__logo-fallback, .hero__logo-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero__logo-fallback--low {
+  inset: auto;
+  left: calc(193.6702 * var(--u));
+  top: calc(91.5806 * var(--u));
+  width: calc(269.007 * var(--u));
+  height: calc(452.162 * var(--u));
+}
+.hero__logo-canvas { opacity: 0; }
+.hero__logo.is-live .hero__logo-canvas { opacity: 1; }
+.hero__logo.is-live .hero__logo-fallback { opacity: 0; }
+
+/* ── Section screens ─────────────────────────────────── */
+.stage { position: relative; height: 100%; display: flex; flex-direction: column; overflow: clip; }
+/* Section-level whitespace: grows with the viewport, Figma values as the cap.
+   The top space is the same on every section so titles never shift between
+   screens; it follows what 인재상/주요 수업 get from a 2:5:3 split (their
+   content is 656px, 599px in the compact tier). The space between title and
+   content, and below the content, absorbs each section's own height. */
+.sp-top { flex: none; height: max(16px, (100vh - 680px) * .2, (100vh - 888px) * .4); }
+.sp-mid { flex: 5 1 0; min-height: 28px; max-height: var(--mid-max, 208px); }
+.sp-bot { flex: 3 1 0; min-height: 20px; }
+@media (max-height: 859px) {
+  .sp-top { height: max(12px, (100vh - 623px) * .2); }
+  .sp-mid { min-height: 24px; }
+  .sp-bot { min-height: 16px; }
+}
+.sec-head, .body { flex: none; }
+
+.sec-head {
+  display: grid;
+  grid-template-columns: var(--col-l) minmax(0, 1fr);
+  column-gap: var(--gap);
+}
+.sec-title {
+  padding-top: 4px;
+  font-size: 48px;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+.sec-intro { --ln: var(--ink-600); padding-top: 13px; padding-right: var(--desc-pr); }
+.sec-intro p { max-width: 776px; font-size: 16px; line-height: 1.5; color: var(--ink-600); }
+
+/* Panes: steps share one grid cell; only the active one is visible */
+.panes { display: grid; }
+.pane { grid-area: 1 / 1; min-width: 0; }
+.pane:not([data-pos="active"]) { visibility: hidden; pointer-events: none; transition: visibility 0s linear var(--t-exit); }
+.pane[data-pos="active"] { visibility: visible; }
+
+/* ── Shared row (List_주요 수업_수업 / List_연간 구조) ─────── */
+.list { display: flex; flex-direction: column; gap: var(--list-gap); min-width: 0; }
+.row {
+  display: grid;
+  grid-template-columns: var(--col-name) minmax(0, 1fr);
+  column-gap: var(--gap);
+}
+.row__name, .row__desc { padding-top: 15px; }
+.row__name { font-size: 18px; line-height: 1.4; font-weight: 700; color: var(--ink-800); }
+.row__name span { display: block; }
+.row__desc { padding-right: var(--desc-pr); }
+.row__desc p { font-size: 14px; line-height: 1.6; color: var(--ink-400); }
+
+/* Small titles (역량 Competency, Fundamental …) sit in the same spot on every
+   step, so between steps they only dissolve in place: the old one fades out
+   quickly, the new one fades in once it is gone. (Their hover transition would
+   otherwise replace the .a exit transition and make them jump.) */
+.side__title.a, .group-head.a { --dy-a: 0px; --dy-b: 0px; }
+.screen .pane:not([data-pos="active"]) .side__title.a,
+.screen .pane:not([data-pos="active"]) .group-head.a { transition: opacity var(--t-title-out) var(--ease-out); }
+.screen[data-pos="active"] .pane[data-pos="active"] .side__title.a,
+.screen[data-pos="active"] .pane[data-pos="active"] .group-head.a { --a-delay: var(--t-title-in-delay); }
+/* …but the group's meta and description beside the title rise and leave like the list rows */
+.group-info { transform: translate3d(0, 28px, 0); transition: transform var(--t-exit) var(--ease-in); }
+.screen[data-pos="before"] .group-info,
+.pane[data-pos="before"] .group-info { transform: translate3d(0, -18px, 0); }
+.screen[data-pos="active"] .pane[data-pos="active"] .group-info {
+  transform: none;
+  transition: transform var(--t-enter-move) var(--ease-out) var(--t-title-in-delay);
+}
+
+/* Hover highlight: the hovered target stays, its siblings dim.
+   Header rows and small titles dim with the rest. */
+.hl { transition: opacity var(--t-hover-out) var(--ease-in-out); outline-offset: 6px; }
+.hl-scope.is-hovering .hl { transition: opacity var(--t-hover-in) var(--ease-out); }
+.hl-scope.is-hovering .hl:not(.is-active) { opacity: .3; }
+.hl-scope.is-hovering .hl--anchor:not(.is-active) { opacity: 1; }
+/* Hovering a row dims everything else in the section body, including the
+   header list above it and the small title on the left (역량 Competency,
+   Fundamental, 수료 & 졸업 …). */
+.side__title, .period__head { transition: opacity var(--t-hover-out) var(--ease-in-out); }
+.hl-scope.is-hovering .group-head.hl--anchor:not(.is-active),
+.hl-scope.is-hovering .term__head.hl--anchor:not(.is-active),
+/* …except the row right beside the small title, which keeps the title lit. */
+.screen .pane .split:has(> .hl-scope.is-hovering):not(:has(> .hl-scope > .item:first-child > .hl.is-active)) .side__title.a,  /* outranks the entrance rule's opacity */
+.period.is-open:has(.hl-scope.is-hovering) .period__head {
+  opacity: .3;
+  transition: opacity var(--t-hover-in) var(--ease-out);
+}
+
+/* + button (detail page link, href filled in later) */
+.more {
+  position: absolute;
+  top: 15px;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: transform 560ms var(--ease-spring);
+}
+.more__bg { width: 28px; height: 28px; transition: filter var(--t-hover-out) var(--ease-in-out); }
+.more__icon { position: absolute; left: 9px; top: 9px; width: 10px; height: 10px; transition: transform 560ms var(--ease-spring); }
+.more:hover { transform: scale(1.08); }
+.more:hover .more__bg { filter: brightness(.94); transition-duration: var(--t-hover-in); }
+.more:hover .more__icon { transform: rotate(90deg); }
+.more:active { transform: scale(.94); transition-duration: 140ms; }
+.term__desc .more { top: 0; }
+
+/* Image slot: placeholder fill + crossfading layers */
+.media {
+  position: relative;
+  display: block;
+  width: var(--media-size, var(--col-l));
+  aspect-ratio: 1;
+  max-width: 100%;
+  background: var(--fill);
+  overflow: hidden;
+}
+.media--fill { width: 100%; aspect-ratio: auto; flex: 1 1 auto; min-height: 0; }
+.media__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 360ms var(--ease-in) 140ms, transform 0s linear 500ms;
+}
+.media__img.is-on { opacity: 1; transform: none; transition: opacity 560ms var(--ease-out), transform 1000ms var(--ease-out); }
+
+/* ── 인재상 ───────────────────────────────────────────── */
+.scene--talent { --media-size: min(var(--col-l), calc(100vh - 278px)); }
+.split {
+  display: grid;
+  grid-template-columns: var(--col-l) minmax(0, 1fr);
+  column-gap: var(--gap);
+  align-items: start;
+}
+.side { display: flex; flex-direction: column; gap: var(--side-gap); }
+.side__title { padding-top: 8px; font-size: 28px; line-height: 1.4; font-weight: 700; color: var(--ink-900); }
+
+.pane--diagram { align-self: stretch; }
+.diagram {
+  position: relative;
+  height: 100%;
+  min-height: 300px;
+  margin-inline: -8px;
+  container-type: size;
+}
+.diagram__axis {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100vw;
+  height: 1px;
+  margin: -0.5px 0 0 -50vw;        /* centred with margins so it spreads from the middle */
+  background: var(--ink-600);
+}
+.diagram__halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 91.4545cqh;               /* 503 / 550 */
+  height: 91.4545cqh;
+  border: 1px solid var(--ink-600);
+  margin: -45.7273cqh 0 0 -45.7273cqh;
+  border-radius: 50%;
+  background: var(--paper);
+}
+.node {
+  position: absolute;
+  top: 50%;
+  width: 56.3636cqh;               /* 310 / 550 */
+  height: 56.3636cqh;
+  margin-top: -28.1818cqh;         /* centring by margin keeps the scale origin at the circle's centre */
+  border-radius: 50%;
+  background: var(--night);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+}
+.node strong { font-size: 26px; line-height: 1.4; font-weight: 700; }
+.node span { font-size: 16px; line-height: 1.6; color: var(--ink-500); }
+.diagram__core { left: 50%; margin-left: -28.1818cqh; }
+.diagram__node { transition: transform 600ms var(--ease-spring); }
+.diagram__node.node--l { left: 0; }
+.diagram__node.node--r { right: 0; }
+.diagram__node:hover { transform: scale(1.04); }
+.diagram__node:active { transform: scale(.97); transition-duration: 160ms; }
+.diagram__node:focus-visible { outline-offset: 6px; }
+
+/* Diagram entrance: the three circles pop almost together — the vector-type
+   circle first, the side circles 70 ms after — while the axis spreads from the centre. */
+/* A real damped spring (damping ratio .62): one soft overshoot, then it settles
+   continuously instead of stepping through separate keyframes. */
+@keyframes pop { from { scale: .3; } to { scale: 1; } }
+@keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spread { from { scale: 0 1; } to { scale: 1 1; } }
+@keyframes rise { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__node { animation: pop 1100ms var(--spring) 270ms both, appear 360ms var(--ease-out) 270ms both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__node > * { animation: rise 520ms var(--ease-out) 450ms both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__axis { animation: spread 820ms var(--ease-out) 200ms both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__halo { animation: pop 1100ms var(--spring) 200ms both, appear 360ms var(--ease-out) 200ms both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__core { animation: pop 1100ms var(--spring) 200ms both, appear 360ms var(--ease-out) 200ms both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__core > * { animation: rise 520ms var(--ease-out) 380ms both; }
+
+/* Leaving on its own: the same entrance played backwards — labels first, then
+   the side circles, the centre 70 ms later, the axis drawing back into the middle.
+   Separate keyframe names so that dropping the class replays the entrance. */
+@keyframes pop-back { from { scale: .3; } to { scale: 1; } }
+@keyframes appear-back { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spread-back { from { scale: 0 1; } to { scale: 1 1; } }
+@keyframes rise-back { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+.screen[data-pos] .pane[data-pos] .diagram.is-leaving .diagram__node { animation: pop-back 1100ms var(--spring) 0ms reverse both, appear-back 360ms var(--ease-out) 740ms reverse both; }
+.screen[data-pos] .pane[data-pos] .diagram.is-leaving .diagram__node > * { animation: rise-back 520ms var(--ease-out) 0ms reverse both; }
+.screen[data-pos] .pane[data-pos] .diagram.is-leaving .diagram__core > * { animation: rise-back 520ms var(--ease-out) 70ms reverse both; }
+.screen[data-pos] .pane[data-pos] .diagram.is-leaving .diagram__halo,
+.screen[data-pos] .pane[data-pos] .diagram.is-leaving .diagram__core { animation: pop-back 1100ms var(--spring) 70ms reverse both, appear-back 360ms var(--ease-out) 810ms reverse both; }
+.screen[data-pos] .pane[data-pos] .diagram.is-leaving .diagram__axis { animation: spread-back 820ms var(--ease-out) 350ms reverse both; }
+
+/* ── 주요 수업 ─────────────────────────────────────────── */
+.scene--courses { --media-size: min(var(--col-l), calc(100vh - 294px)); }
+.group-head {
+  display: grid;
+  grid-template-columns: var(--col-l) minmax(0, 1fr);
+  column-gap: var(--gap);
+}
+.group-title { padding-top: 8px; font-size: 28px; line-height: 1.4; font-weight: 700; color: var(--ink-900); }
+.group-info {
+  padding-top: 15px;
+  display: grid;
+  grid-template-columns: var(--col-name) minmax(0, 1fr);
+  column-gap: var(--gap);
+  font-size: 14px;
+  color: var(--ink-400);
+}
+.group-meta { line-height: 1.6; white-space: pre-wrap; }
+.group-desc { line-height: 1.55; padding-right: var(--desc-pr); }
+.group-head + .split { margin-top: var(--group-gap); }
+
+/* ── 수업 장치 ─────────────────────────────────────────── */
+.scene--devices { --mid-max: 168px; --card-img-h: clamp(220px, calc(100vh - 430px), 340px); }
+.rail { position: relative; }
+.track { display: flex; gap: 40px; width: max-content; will-change: transform; }
+.card { width: 543px; }
+.card__in { display: flex; flex-direction: column; gap: 20px; }
+.card__top { display: flex; flex-direction: column; gap: 16px; }
+.card__title { padding-top: 13px; font-size: 24px; line-height: 1.5; font-weight: 700; color: var(--ink-900); }
+.card__img { height: var(--card-img-h); background: var(--night); overflow: hidden; }
+.card__img img { width: 100%; height: 100%; object-fit: cover; }
+.card__desc { font-size: 14px; line-height: 1.6; color: var(--ink-400); }
+.rail-ctrl { display: flex; justify-content: flex-end; gap: 16px; margin-top: var(--rail-gap); }
+.rail-btn { width: 28px; height: 28px; border-radius: 50%; transition: transform 560ms var(--ease-spring), opacity var(--t-hover-out) var(--ease-in-out); }
+.rail-btn:hover:not(:disabled) { transform: scale(1.1); }
+.rail-btn:active:not(:disabled) { transform: scale(.92); transition-duration: 140ms; }
+.rail-btn:disabled { opacity: .35; cursor: default; }
+
+/* ── 연간 구조: the period you open expands into its detail ─ */
+.scene--year { --mid-max: 112px; }
+.scene--year .body { flex: 0 1 649px; min-height: 360px; display: flex; flex-direction: column; }
+.scene--year .pane { flex: 1 1 auto; min-height: 0; }
+
+.periods { display: flex; height: 100%; }
+.period {
+  flex: 0 0 var(--mw);
+  min-width: 0;
+  display: flex;
+  margin-right: var(--gap);
+  overflow: clip;
+  overflow-clip-margin: 8px;
+  transition:
+    flex-basis var(--t-expand) var(--ease-in-out),
+    margin-right var(--t-expand) var(--ease-in-out),
+    opacity 420ms var(--ease-in-out);
+}
+.period:last-child { margin-right: 0; }
+.periods.is-open .period { flex-basis: 0px; margin-right: 0; opacity: 0; pointer-events: none; }
+.periods.is-open .period.is-open { flex-basis: 100%; opacity: 1; pointer-events: auto; }
+
+.period__main {
+  flex: 0 0 var(--mw);
+  min-height: 0;
+  display: flex;
+  transition: flex-basis var(--t-expand) var(--ease-in-out);
+}
+.period.is-open .period__main { flex-basis: var(--col-l); }
+.period__btn { display: flex; flex-direction: column; gap: 16px; width: 100%; min-height: 0; }
+.period.is-open .period__btn { cursor: default; }
+.period__head { display: flex; flex-direction: column; gap: 2px; padding-top: 16px; height: 74px; flex: none; }
+.period__name {
+  font-size: 24px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--ink-900);
+  white-space: nowrap;
+  transition: font-size var(--t-expand) var(--ease-in-out);
+}
+.period.is-open .period__name { font-size: 26px; }
+.period__range { font-size: 14px; line-height: 1.6; color: var(--ink-400); white-space: nowrap; transition: opacity 360ms var(--ease-out) 300ms; }
+.period.is-open .period__range { opacity: 0; transition: opacity 220ms var(--ease-in); }
+.period__btn .media { transition: filter 600ms var(--ease-out); }
+.periods:not(.is-open) .period__btn:hover .media { filter: brightness(.97); }
+
+.period__detail {
+  flex: 0 0 auto;
+  width: var(--detail-w, 893px);
+  margin-left: var(--gap);
+  min-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 240ms var(--ease-in), visibility 0s linear 240ms;
+}
+.period.is-open .period__detail { opacity: 1; visibility: visible; transition: opacity 560ms var(--ease-out) 380ms; }
+.period__detail-in {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  transform: translate3d(40px, 0, 0);
+  transition: transform 240ms var(--ease-in);
+}
+.period.is-open .period__detail-in { transform: none; transition: transform 820ms var(--ease-out) 380ms; }
+/* detail lines draw only once the period has opened */
+.screen .period:not(.is-open) .period__detail .ln::before { transform: scaleX(0); transition: transform 0s linear 240ms; }
+.screen[data-pos="active"] .period.is-open .period__detail .ln::before { transform: none; transition: transform var(--t-line) var(--ease-out) calc(460ms + var(--ln-lag, 0ms)); }
+.screen[data-pos="active"] .period.is-open .period__detail .item:nth-child(2) .ln::before { transition-delay: calc(520ms + var(--ln-lag, 0ms)); }
+.screen[data-pos="active"] .period.is-open .period__detail .item:nth-child(3) .ln::before { transition-delay: calc(580ms + var(--ln-lag, 0ms)); }
+
+.term__head {
+  padding-top: 15px;
+  display: grid;
+  grid-template-columns: var(--col-name) minmax(0, 1fr);
+  column-gap: var(--gap);
+}
+.term__when { display: flex; flex-direction: column; gap: 2px; }
+.term__when span { font-size: 14px; line-height: 1.6; color: var(--ink-400); }
+.term__when strong { font-size: 18px; line-height: 1.4; font-weight: 700; color: var(--ink-800); }
+.term__desc { position: relative; padding-right: var(--desc-pr); }
+.term__desc p { font-size: 14px; line-height: 1.55; color: var(--ink-400); }
+.list--year { gap: var(--list-gap); }
+
+/* Timetable: 10:00–18:00, hour lines spread over the available height */
+.tt { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin-left: -21px; }
+.tt__days { display: flex; padding-left: 22px; }
+.tt__days span { flex: 1 1 0; padding-inline: 16px; text-align: center; font-size: 14px; line-height: 1.6; color: var(--ink-400); }
+.tt__grid { position: relative; flex: 1 1 auto; min-height: 0; }
+.tt__hour {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--k) * (100% - 19px) / 8);
+  height: 19px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tt__hour span { width: 14px; flex: none; text-align: right; font-size: 12px; line-height: 1.6; color: var(--ink-200); font-variant-numeric: tabular-nums; }
+.tt__hour i { flex: 1 1 auto; height: 1px; background: repeating-linear-gradient(90deg, var(--line) 0 3px, transparent 3px 6px); }
+.tt__blocks {
+  position: absolute;
+  left: 22px;
+  right: 0;
+  top: 9.5px;
+  bottom: 9.5px;
+  display: grid;
+  grid-template-rows: 3fr 2fr 3fr;
+}
+.tt__row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding-block: 8px; min-height: 0; }
+.tt__row--lunch { grid-template-columns: 1fr; }
+.tt__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  min-height: 0;
+  text-align: center;
+  background: rgba(245, 245, 247, .6);
+}
+.tt__cell--core { background: rgba(232, 232, 237, .6); }
+.tt__cell b { font-size: 14px; line-height: 1.6; font-weight: 700; color: var(--ink-500); }
+.tt__cell--core b { color: var(--ink-600); }
+.tt__cell small { font-size: 12px; line-height: 1.6; color: var(--ink-400); font-variant-numeric: tabular-nums; }
+
+/* ── Footer ──────────────────────────────────────────── */
+.footer { position: relative; z-index: 2; background: var(--night); }
+.footer__in {
+  display: grid;
+  grid-template-columns: var(--col-l) minmax(0, 1fr);
+  column-gap: var(--gap);
+  padding-block: 64px;
+}
+.footer__company { display: flex; flex-direction: column; gap: 16px; }
+.footer__contact { font-size: 16px; line-height: 1.5; font-weight: 700; color: var(--night-strong); }
+.footer__contact-line { display: flex; gap: 10px; }
+.footer__hours { display: flex; flex-direction: column; gap: 2px; font-size: 12px; line-height: 1.6; color: var(--ink-400); }
+.footer__links { display: flex; flex-direction: column; gap: 8px; }
+.footer__policy { display: flex; align-items: center; gap: 10px; font-size: 12px; line-height: 1.6; }
+.footer__policy a { color: var(--ink-500); transition: color var(--t-hover-out) var(--ease-in-out); }
+.footer__policy a.is-strong { font-weight: 600; color: var(--ink-400); }
+.footer__policy a + a::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 10px;
+  margin-right: 10px;
+  vertical-align: -1px;
+  background: var(--night-sep);
+}
+.footer__policy a:hover, .footer__contact a:hover { color: var(--night-strong); transition: color var(--t-hover-in) var(--ease-out); }
+.footer__legal { display: flex; flex-direction: column; font-size: 12px; line-height: 1.6; color: var(--night-label); }
+.footer__legal p { display: flex; gap: 8px; }
+.footer__social { display: flex; gap: 12px; margin-top: 4px; }
+.footer__social a { transition: opacity var(--t-hover-out) var(--ease-in-out); }
+.footer__social a:hover { opacity: .6; transition: opacity var(--t-hover-in) var(--ease-out); }
+.footer__social img { width: 20px; height: 20px; }
+.footer :focus-visible { outline-color: var(--night-strong); }
+
+/* ── Boot / reduced motion ───────────────────────────── */
+.is-booting *, .is-booting *::before, .is-booting *::after { transition: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .a, .screen[data-pos] .a, .pane[data-pos] .a, .group-info { transform: none !important; }
+  .a, .screen--hero[data-pos="active"] .a, .screen[data-pos="active"] .sec-head .a,
+  .screen[data-pos="active"] .pane[data-pos="active"] .a { transition: opacity 180ms linear !important; }
+  .ln::before, .gl { transform: none !important; transition: none !important; }
+  .diagram *, .diagram__node > * { animation: none !important; }
+  .media__img, .media__img.is-on { transform: none; transition: opacity 180ms linear; }
+  .period, .period__main, .period__name, .period__detail, .period__detail-in { transition-duration: 1ms !important; transition-delay: 0ms !important; }
+  .diagram__node, .more, .more__icon, .rail-btn, .gnb, .gnb__cta { transition: none; }
+}

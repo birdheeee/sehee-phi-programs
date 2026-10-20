@@ -237,7 +237,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   pointer-events: none;
   --bw: min(100%, 1920px);
   --bl: calc((100% - var(--bw)) / 2);
-  --facts-x: calc(50% + min(100%, var(--container)) / 2 - var(--pad) - 1px);
 }
 .gl {
   position: absolute;
@@ -253,13 +252,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 }
 .gl-h1 { top: 23.6068%; left: 0; width: calc(var(--bl) + 0.618034 * var(--bw)); }
 .gl-h2 { top: 38.1966%; left: 0; right: 0; }
-/* x 1639 at 1920: the right end of the course-facts lines, so it follows that
-   column (centred container minus padding) on every width, not the φ box */
-.gl-h3 { top: 52.7864%; left: 0; width: var(--facts-x); }
+.gl-h3 { top: 52.7864%; left: 0; width: calc(var(--bl) + 0.853646 * var(--bw)); } /* to x 1639 */
 .gl-h4 { top: 61.8034%; left: calc(var(--bl) + 0.381966 * var(--bw)); right: 0; }
 .gl-v1 { left: calc(var(--bl) + 0.381966 * var(--bw)); top: 0; bottom: 0; }
 .gl-v2 { left: calc(var(--bl) + 0.618034 * var(--bw)); top: 0; height: 38.1966%; }
-.gl-v3 { left: var(--facts-x); top: 38.1966%; height: 23.6068%; }
+.gl-v3 { left: calc(var(--bl) + 0.853646 * var(--bw)); top: 38.1966%; height: 23.6068%; } /* x 1639, y 413–667 */
 .gl-label {
   position: absolute;
   font-size: 12px;

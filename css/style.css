@@ -311,7 +311,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   white-space: nowrap;
   color: var(--night-ink);
 }
-.hero__topics li { --dy-a: 14px; }
+
 .hero__headline {
   position: absolute;
   z-index: 3;
@@ -409,6 +409,34 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .hero__logo.is-live .hero__logo-canvas { opacity: 1; }
 .hero__logo.is-live .hero__logo-fallback { opacity: 0; }
 
+/* Hero entrance (~2 s). The φ lines sweep across first, the logo swells in on a
+   spring, headline and course names slide up out of line masks one by one, the
+   number pops, the course facts follow and the grid labels arrive last.
+   Hidden states snap back only after the exit fade, so leaving stays quick. */
+.screen--hero { --t-stagger: 70ms; }
+.screen--hero[data-pos="active"] .gl {
+  transition: transform 1400ms var(--ease-out) calc(var(--i, 0) * 180ms);
+}
+.hero .ml { display: block; overflow: clip; padding-block: .12em; margin-block: -.12em; }
+.hero .ml > span { display: block; transform: translate3d(0, 112%, 0); transition: transform 0s linear var(--t-exit); }
+.screen--hero[data-pos="active"] .hero .ml > span {
+  transform: none;
+  transition: transform 1100ms var(--ease-out) calc(var(--a-delay) + var(--k, 0) * 90ms);
+}
+.hero__logo, .hero__num { scale: .72; }
+.screen--hero[data-pos="active"] .hero__logo.a,
+.screen--hero[data-pos="active"] .hero__num.a {
+  scale: 1;
+  transition:
+    opacity 700ms var(--ease-out) var(--a-delay),
+    scale 1500ms var(--spring) var(--a-delay);
+}
+.screen--hero:not([data-pos="active"]) .hero__logo.a,
+.screen--hero:not([data-pos="active"]) .hero__num.a {
+  transition: opacity var(--t-exit) var(--ease-in), scale 0s linear var(--t-exit);
+}
+.hero__intro.a, .hero__facts .a { --dy-a: 36px; }
+
 /* ── Section screens ─────────────────────────────────── */
 .stage { position: relative; height: 100%; display: flex; flex-direction: column; overflow: clip; }
 /* Section-level whitespace: grows with the viewport, Figma values as the cap.
@@ -446,7 +474,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .panes { display: grid; }
 .pane { grid-area: 1 / 1; min-width: 0; }
 .pane:not([data-pos="active"]) { visibility: hidden; pointer-events: none; transition: visibility 0s linear var(--t-exit); }
-.pane[data-pos="active"] { visibility: visible; }
+.pane[data-pos="active"] { visibility: inherit; } /* inherit: a hidden screen hides its panes too */
 
 /* ── Shared row (List_주요 수업_수업 / List_연간 구조) ─────── */
 .list { display: flex; flex-direction: column; gap: var(--list-gap); min-width: 0; }
@@ -732,7 +760,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   visibility: hidden;
   transition: opacity 240ms var(--ease-in), visibility 0s linear 240ms;
 }
-.period.is-open .period__detail { opacity: 1; visibility: visible; transition: opacity 560ms var(--ease-out) 380ms; }
+.period.is-open .period__detail { opacity: 1; visibility: inherit; transition: opacity 560ms var(--ease-out) 380ms; }
+.screen:not([data-pos="active"]) .period.is-open .period__detail { opacity: 0; transition: opacity var(--t-exit) var(--ease-in); }
 .period__detail-in {
   height: 100%;
   display: flex;
@@ -848,6 +877,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .ln::before, .gl { transform: none !important; transition: none !important; }
   .diagram *, .diagram__node > * { animation: none !important; }
   .side__title.a, .group-head.a { animation: none !important; }
+  .hero .ml > span { transform: none !important; transition: none !important; }
+  .hero__logo, .hero__num { scale: 1 !important; }
   .media__img, .media__img.is-on { transform: none; transition: opacity 180ms linear; }
   .period, .period__main, .period__name, .period__detail, .period__detail-in { transition-duration: 1ms !important; transition-delay: 0ms !important; }
   .diagram__node, .more, .more__icon, .rail-btn, .gnb, .gnb__cta { transition: none; }

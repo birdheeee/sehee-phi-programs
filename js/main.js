@@ -343,7 +343,19 @@
       running = false;
     }
     apply(0);
+    let leaveTimer = 0;
     return {
+      // leaving the screen with a period open (fast scroll, scrollbar, Home key):
+      // once it has faded out, fold back to the overview so it returns clean
+      onActive(on) {
+        clearTimeout(leaveTimer);
+        if (on) return;
+        leaveTimer = setTimeout(() => {
+          if (el.dataset.pos === 'active') return;
+          target = 0;
+          if (!running) { apply(0); shown = 0; }
+        }, 520);
+      },
       // steps alternate overview / period: 0 overview, 1 1학기, 2 overview, 3 방학 & 캠프 …
       // so moving on from an open period always stops on the overview first
       setStep(k) { target = k % 2 ? (k + 1) / 2 : 0; run(); },

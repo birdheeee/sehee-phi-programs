@@ -467,9 +467,17 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
    otherwise replace the .a exit transition and make them jump.) */
 .side__title.a, .group-head.a { --dy-a: 0px; --dy-b: 0px; }
 .screen .pane:not([data-pos="active"]) .side__title.a,
-.screen .pane:not([data-pos="active"]) .group-head.a { transition: opacity var(--t-title-out) var(--ease-out); }
+.screen .pane:not([data-pos="active"]) .group-head.a,
+.screen:not([data-pos="active"]) .pane .side__title.a,
+.screen:not([data-pos="active"]) .pane .group-head.a { transition: opacity var(--t-title-out) var(--ease-out); }
+/* Their entrance runs as an animation, so the transition stays free for hover:
+   dimming and recovering then happen in step with the rows beside them. */
+@keyframes title-in { from { opacity: 0; } }
 .screen[data-pos="active"] .pane[data-pos="active"] .side__title.a,
-.screen[data-pos="active"] .pane[data-pos="active"] .group-head.a { --a-delay: var(--t-title-in-delay); }
+.screen[data-pos="active"] .pane[data-pos="active"] .group-head.a {
+  transition: opacity var(--t-hover-out) var(--ease-in-out);
+  animation: title-in var(--t-enter) var(--ease-out) var(--t-title-in-delay) backwards;
+}
 /* …but the group's meta and description beside the title rise and leave like the list rows */
 .group-info { transform: translate3d(0, 28px, 0); transition: transform var(--t-exit) var(--ease-in); }
 .screen[data-pos="before"] .group-info,
@@ -839,6 +847,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .screen[data-pos="active"] .pane[data-pos="active"] .a { transition: opacity 180ms linear !important; }
   .ln::before, .gl { transform: none !important; transition: none !important; }
   .diagram *, .diagram__node > * { animation: none !important; }
+  .side__title.a, .group-head.a { animation: none !important; }
   .media__img, .media__img.is-on { transform: none; transition: opacity 180ms linear; }
   .period, .period__main, .period__name, .period__detail, .period__detail-in { transition-duration: 1ms !important; transition-delay: 0ms !important; }
   .diagram__node, .more, .more__icon, .rail-btn, .gnb, .gnb__cta { transition: none; }

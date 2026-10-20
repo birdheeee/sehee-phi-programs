@@ -26,7 +26,7 @@
                             // overshoot lands here instead of sliding the screen toward the footer
   const HYSTERESIS = 0.06;  // a step changes only once its edge is passed by 6% of a step
   const CAROUSEL_IN = 0.25; // hold before the cards start moving, × viewport height
-  const CAROUSEL_OUT = 0.4; // hold after the last card arrives, × viewport height
+  const CAROUSEL_OUT = 0.12;// hold after the last card arrives, × viewport height (one swipe moves on)
   const FOLLOW_MS = 110;    // carousel follow time constant (inertia without overshoot)
   const CAROUSEL_SETTLE = 900; // ms after arriving from above in which leftover scroll is absorbed
   const CAROUSEL_SETTLE_MAX = 1600; // …extended while a fling's momentum keeps coming, up to this
@@ -267,8 +267,16 @@
       x = target = 0;
       track.style.transform = 'translate3d(0, 0, 0)';
     };
-    window.addEventListener('wheel', () => {
+    let lastAbs = 0;
+    let lastT = 0;
+    window.addEventListener('wheel', (e) => {
       const now = performance.now();
+      const abs = Math.abs(e.deltaY);
+      // momentum only fades; a delta that grows again is the user's next swipe
+      const prev = now - lastT > 200 ? 0 : lastAbs;
+      const newSwipe = prev > 0 && abs > prev * 1.5 + 6;
+      lastAbs = abs; lastT = now;
+      if (newSwipe) { settleUntil = 0; endUntil = 0; return; }
       if (now < settleUntil) settleUntil = Math.min(settleCap, Math.max(settleUntil, now + 140));
       if (now < endUntil) endUntil = Math.min(endCap, Math.max(endUntil, now + 140));
     }, { passive: true });

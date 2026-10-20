@@ -172,6 +172,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* Section screens: the GNB hides while scrolling down, so they reserve 40px less than its height. */
 .screen:not(.screen--hero) { --top-reserve: calc(var(--gnb-h) - 40px); padding-top: var(--top-reserve); }
 
+/* Coming from the dark hero, a screen waits a beat before its content arrives,
+   so the hero has cleared first (set by JS on the entered screen, cleared on
+   the next step). */
+.screen[data-from="hero"] { --enter-lag: 500ms; --t-delay: calc(120ms + var(--enter-lag)); }
+
 /* Entering / leaving content (.a). The hidden state sits below the resting
    position for what comes next, above it for what has passed. */
 .a {
@@ -403,13 +408,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .hero__logo--top { z-index: 2; top: calc(-90 * var(--u)); }
 .hero__logo--low { z-index: 1; top: calc(376 * var(--u)); }
 .hero__logo-fallback, .hero__logo-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero__logo-fallback--low {
-  inset: auto;
-  left: calc(193.6702 * var(--u));
-  top: calc(91.5806 * var(--u));
-  width: calc(269.007 * var(--u));
-  height: calc(452.162 * var(--u));
-}
 .hero__logo-canvas { opacity: 0; }
 .hero__logo.is-live .hero__logo-canvas { opacity: 1; }
 .hero__logo.is-live .hero__logo-fallback { opacity: 0; }
@@ -658,12 +656,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
 @keyframes spread { from { scale: 0 1; } to { scale: 1 1; } }
 @keyframes rise { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
-.screen[data-pos="active"] .pane[data-pos="active"] .diagram__node { animation: pop 1100ms var(--spring) 340ms both, appear 360ms var(--ease-out) 340ms both; }
-.screen[data-pos="active"] .pane[data-pos="active"] .diagram__node > * { animation: rise 520ms var(--ease-out) 520ms both; }
-.screen[data-pos="active"] .pane[data-pos="active"] .diagram__axis { animation: spread 820ms var(--ease-out) 200ms both; }
-.screen[data-pos="active"] .pane[data-pos="active"] .diagram__halo { animation: pop 1100ms var(--spring) 200ms both, appear 360ms var(--ease-out) 200ms both; }
-.screen[data-pos="active"] .pane[data-pos="active"] .diagram__core { animation: pop 1100ms var(--spring) 200ms both, appear 360ms var(--ease-out) 200ms both; }
-.screen[data-pos="active"] .pane[data-pos="active"] .diagram__core > * { animation: rise 520ms var(--ease-out) 380ms both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__node { animation: pop 1100ms var(--spring) calc(var(--enter-lag, 0ms) + 340ms) both, appear 360ms var(--ease-out) calc(var(--enter-lag, 0ms) + 340ms) both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__node > * { animation: rise 520ms var(--ease-out) calc(var(--enter-lag, 0ms) + 520ms) both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__axis { animation: spread 820ms var(--ease-out) calc(var(--enter-lag, 0ms) + 200ms) both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__halo { animation: pop 1100ms var(--spring) calc(var(--enter-lag, 0ms) + 200ms) both, appear 360ms var(--ease-out) calc(var(--enter-lag, 0ms) + 200ms) both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__core { animation: pop 1100ms var(--spring) calc(var(--enter-lag, 0ms) + 200ms) both, appear 360ms var(--ease-out) calc(var(--enter-lag, 0ms) + 200ms) both; }
+.screen[data-pos="active"] .pane[data-pos="active"] .diagram__core > * { animation: rise 520ms var(--ease-out) calc(var(--enter-lag, 0ms) + 380ms) both; }
 
 /* Leaving on its own: the same entrance played backwards — labels first, then
    the side circles, the centre 70 ms later, the axis drawing back into the middle.

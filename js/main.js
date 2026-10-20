@@ -34,6 +34,7 @@
   const YEAR_EXPAND = 760;  // ms for a period to open
   const TALENT_ENTER = 1440;// ms the 인재상 diagram takes to pop in
   const TALENT_HOLD = 2500; // ms it then rests before moving on by itself
+  const HERO_LAG = 500;     // ms a screen waits after the hero before its content arrives (CSS --enter-lag)
   const TALENT_SHRINK = 1170;// ms of the reversed entrance before the next step
 
   /* ── Image slots ─────────────────────────────────────── */
@@ -382,7 +383,7 @@
       wrap,
       canvas: wrap.querySelector('canvas'),
       ctx: wrap.querySelector('canvas').getContext('2d'),
-      offset: wrap.classList.contains('hero__logo--low') ? 61 : 0, // starts on frame 62, ~2 s apart
+      offset: wrap.classList.contains('hero__logo--low') ? 78 : 0, // half a turn apart: both ease and speed up together, in opposite shapes
     }));
     const cross = hero.querySelector('.hero__cross');
     const crossV = cross.querySelector('.cross-v');
@@ -698,7 +699,7 @@
       autoT.phase = 'shrink';
       diagram.classList.add('is-leaving');
       autoT.shrink = setTimeout(() => { stopAuto(true); jumpToStep(si, 1); }, TALENT_SHRINK);
-    }, TALENT_ENTER + TALENT_HOLD);
+    }, TALENT_ENTER + TALENT_HOLD + (talent.el.dataset.from === 'hero' ? HERO_LAG : 0));
   }
   function userIntent(dir) {
     if (!autoT.phase) return;
@@ -717,6 +718,12 @@
     const prev = cur;
     cur = n;
     const g = segs[n];
+    const prevSi = prev >= 0 ? segs[prev].si : -1;
+    const entered = screens[g.si].el;
+    if (prevSi !== g.si) {
+      if (prevSi >= 0 && screens[prevSi].kind === 'hero') entered.dataset.from = 'hero';
+      else delete entered.dataset.from;
+    } else delete entered.dataset.from; // later steps on the same screen keep the usual timing
     if (talent && screens[g.si] === talent && g.step === 0) {
       if (prev < n) startAuto(); else stopAuto();
     } else if (autoT.phase) stopAuto(autoT.phase === 'shrink'); // a shrunk diagram stays shrunk while it fades out

@@ -739,8 +739,10 @@
      between periods, in both directions. The 수업 장치 carousel handles its
      own arrival and last card. */
   const STOP_MS = 700;
-  const STOP_MAX = 1200;
-  const stop = { seg: -1, until: 0, cap: 0, lastAbs: 0, lastT: 0 };
+  const STOP_MAX = 3000;   // a Mac trackpad's momentum tail can run this long; a new swipe still cuts in at once
+  const STOP_REST = 0.35;  // the held position sits this far into the step (from the side it was entered),
+                           // so a fading tail after the hold cannot slip into the next step
+  const stop = { seg: -1, dir: 1, until: 0, cap: 0, lastAbs: 0, lastT: 0 };
   window.addEventListener('wheel', (e) => {
     const now = performance.now();
     const abs = Math.abs(e.deltaY);
@@ -756,7 +758,9 @@
     const now = performance.now();
     if (stop.seg < 0 || now >= stop.until || now < programmaticUntil || !segs[stop.seg]) return y;
     const g = segs[stop.seg];
-    const held = clamp(y, g.start, g.start + g.len);
+    const held = stop.dir > 0
+      ? clamp(y, g.start, g.start + g.len * STOP_REST)
+      : clamp(y, g.start + g.len * (1 - STOP_REST), g.start + g.len);
     if (held !== y) window.scrollTo({ top: deckTop() + held, behavior: 'instant' });
     return held;
   }
@@ -777,7 +781,7 @@
       const now = performance.now();
       const ns = screens[segs[n].si];
       if (ns.kind !== 'carousel' && cur >= 0 && now > programmaticUntil) {
-        Object.assign(stop, { seg: n, until: now + STOP_MS, cap: now + STOP_MAX });
+        Object.assign(stop, { seg: n, dir: n > cur ? 1 : -1, until: now + STOP_MS, cap: now + STOP_MAX });
       } else stop.seg = -1;
       goTo(n);
       const s = screens[segs[n].si];
